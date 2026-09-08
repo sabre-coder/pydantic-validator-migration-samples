@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "title": "Three free Pydantic validator migration samples",
+  "price": "free",
+  "license": "MIT",
+  "prepared_at": "2026-09-08",
+  "validation_status": "hosted_execution_pending",
+  "validation_targets": {
+    "python": "==3.12.14",
+    "before": "pydantic==1.10.26",
+    "after": "pydantic==2.13.5",
+    "platform": "ubuntu-24.04",
+    "other_versions": "not covered by this prepared validation matrix"
+  },
+  "rules": [
+    {
+      "id": "item-validator",
+      "title": "Keep validation attached to each container item",
+      "applies_when": [
+        "A V1 field uses each_item=True with the default pre=False.",
+        "The validator is stateless and depends only on the validated item."
+      ],
+      "change": "Put AfterValidator on an Annotated item type inside the list, and return the transformed item.",
+      "before": "examples/v1/item_validator.py",
+      "after": "examples/v2/item_validator.py",
+      "cases": [
+        {"input": {"labels": ["  alpha ", "beta"]}, "output": {"labels": ["alpha", "beta"]}},
+        {"input": {"labels": ["alpha", "   "]}, "exception": "ValidationError", "error_location": ["labels", 1]},
+        {"input": {"labels": ["alpha", null]}, "exception": "ValidationError", "error_location": ["labels", 1]},
+        {"input": {"labels": []}, "output": {"labels": []}}
+      ],
+      "review_boundaries": [
+        "A pre=True source validator needs BeforeValidator instead.",
+        "Validators using class state, other fields, or inherited fields need separate review.",
+        "List emptiness is not constrained here; error text and coercions are not promised identical."
+      ],
+      "sources": [
+        "https://docs.pydantic.dev/latest/migration/",
+        "https://docs.pydantic.dev/latest/concepts/validators/",
+        "https://docs.pydantic.dev/1.10/usage/validators/"
+      ]
+    },
+    {
+      "id": "default-validator",
+      "title": "Preserve normalization when the field is omitted",
+      "applies_when": [
+        "A V1 before-type validator uses always=True to normalize an explicit default."
+      ],
+      "change": "Keep the explicit default, enable Field(validate_default=True), and use a before field validator for raw-input normalization.",
+      "before": "examples/v1/default_validator.py",
+      "after": "examples/v2/default_validator.py",
+      "cases": [
+        {"input": {}, "output": {"display_name": "guest"}},
+        {"input": {"display_name": null}, "output": {"display_name": "anonymous"}},
+        {"input": {"display_name": "  Ada  "}, "output": {"display_name": "Ada"}},
+        {"input": {"display_name": ""}, "output": {"display_name": "anonymous"}}
+      ],
+      "review_boundaries": [
+        "validate_default does not create a default for a required field.",
+        "This rule preserves the sample's explicit None and empty-string policy; it does not infer a new policy.",
+        "Returned raw values still undergo normal field type validation; numeric-to-string coercion is outside this sample."
+      ],
+      "sources": [
+        "https://docs.pydantic.dev/latest/concepts/validators/",
+        "https://docs.pydantic.dev/latest/migration/",
+        "https://docs.pydantic.dev/1.10/usage/validators/"
+      ]
+    },
+    {
+      "id": "validation-exception",
+      "title": "Separate deliberate invalid input from programming TypeError",
+      "applies_when": [
+        "A V1 validator deliberately raises TypeError to reject a business-rule violation."
+      ],
+      "change": "Raise ValueError for that deliberate rejection. Preserve unexpected programming TypeError; do not add a blanket exception-conversion handler.",
+      "before": "examples/v1/validation_exception.py",
+      "after": "examples/v2/validation_exception.py",
+      "cases": [
+        {"input": {"priority": 3}, "output": {"priority": 3}},
+        {"input": {"priority": 11}, "exception": "ValidationError", "error_location": ["priority"], "before_error_type": "type_error", "after_error_type": "value_error"},
+        {"input": {"priority": "urgent"}, "exception": "ValidationError", "error_location": ["priority"]},
+        {"model": "ProgrammingErrorExample", "input": {"count": 3}, "before_exception": "ValidationError", "after_exception": "TypeError"}
+      ],
+      "review_boundaries": [
+        "The business-rule example intentionally changes the structured error type from type_error to value_error.",
+        "ValueError is the choice in this sample; PydanticCustomError can express structured custom failures in V2.",
+        "The programming-error model is intentionally defective to demonstrate V2 propagation, not code to adopt."
+      ],
+      "sources": [
+        "https://docs.pydantic.dev/latest/migration/",
+        "https://docs.pydantic.dev/latest/concepts/validators/"
+      ]
+    }
+  ]
+}
