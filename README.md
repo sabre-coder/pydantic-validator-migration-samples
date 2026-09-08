@@ -6,9 +6,10 @@ V1 and V2 Python examples. The samples are free to use under the MIT license.
 They were prepared with AI assistance on September 8, 2026 and are not affiliated
 with Pydantic.
 
-**Validation status: hosted execution is pending.** The Python examples have not
-been executed locally. The included workflow is prepared for review and has not
-been published or dispatched.
+**Validation passed:** all 12 behavior checks pass in each pinned environment
+(24 executions total) in [hosted run 34220636575](https://github.com/sabre-coder/pydantic-validator-migration-samples/actions/runs/34220636575),
+testing commit `3667cf0ac7c94fe1f8b0ca9f2ff1f6b4240f19de`.
+The examples were executed only on disposable GitHub-hosted runners.
 
 | Rule | V1 pattern | V2 pattern |
 | --- | --- | --- |
@@ -31,7 +32,7 @@ The prepared validation matrix is deliberately narrow:
 
 Pydantic and its runtime dependencies are pinned in `requirements-v1.txt` and
 `requirements-v2.txt`. Release metadata was checked on September 8, 2026.
-These pins are validation targets, not a claim that execution has passed.
+The linked successful run uses exactly these pins.
 Other package or Python versions, frameworks, inheritance, assignment validation,
 and different coercion policies require their own checks. V1 does not support
 Python 3.14 or later.

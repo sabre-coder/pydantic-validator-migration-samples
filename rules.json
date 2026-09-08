@@ -4,7 +4,13 @@
   "price": "free",
   "license": "MIT",
   "prepared_at": "2026-09-08",
-  "validation_status": "hosted_execution_pending",
+  "validation_status": "passed",
+  "validation_evidence": {
+    "source_commit": "3667cf0ac7c94fe1f8b0ca9f2ff1f6b4240f19de",
+    "run_url": "https://github.com/sabre-coder/pydantic-validator-migration-samples/actions/runs/34220636575",
+    "checks_per_environment": 12,
+    "environments_passed": 2
+  },
   "validation_targets": {
     "python": "==3.12.14",
     "before": "pydantic==1.10.26",
