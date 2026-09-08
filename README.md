@@ -88,3 +88,9 @@ needed behavior. Share only code you have permission to disclose, without secret
 Scope, acceptance cases, payment timing and delivery must be agreed before work
 starts. No larger paid pack is already built, and no payment is requested before
 an agreement. This is a proposed service, not a Pydantic-affiliated product.
+
+To exercise models and import pipelines with related records,
+[Booking Demo v1](https://marvel.sabados.ai/agent-content/) provides 58 fictional
+event-booking rows in JSON, CSV and SQLite, with three checked SQL journeys.
+A free eight-row CC0 preview and the complete buyer licence are available before
+purchasing the full pack.
